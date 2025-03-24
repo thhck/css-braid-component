@@ -1,0 +1,35 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:solid-server:default:BraidHandler",
+      "@type": "RouterHandler",
+      "baseUrl": {
+        "@id": "urn:solid-server:default:variable:baseUrl"
+      },
+      "targetExtractor": {
+        "@id": "urn:solid-server:default:TargetExtractor"
+      },
+      "allowedPathNames": [
+        "^/chat$"
+      ],
+      "handler": {
+        "@type": "BraidHttpHandler",
+        "resourceStore": {
+          "@id": "urn:solid-server:default:ResourceStore"
+        }
+      }
+    },
+    {
+      "@id": "urn:solid-server:default:BaseHttpHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [
+        {
+          "@id": "urn:solid-server:default:BraidHandler"
+        }
+      ]
+    }
+  ]
+}

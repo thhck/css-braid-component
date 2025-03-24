@@ -1,3 +1,6 @@
+// Braid endpoint
+export * from './braid/BraidHandler';
+
 // Authentication
 export * from './authentication/BearerWebIdExtractor';
 export * from './authentication/Credentials';
@@ -377,6 +380,7 @@ export * from './server/middleware/CorsHandler';
 export * from './server/middleware/HeaderHandler';
 export * from './server/middleware/StaticAssetHandler';
 export * from './server/middleware/WebSocketAdvertiser';
+export * from './server/middleware/BraidHandler';
 
 // Server/Notifications/Generate
 export * from './server/notifications/generate/ActivityNotificationGenerator';

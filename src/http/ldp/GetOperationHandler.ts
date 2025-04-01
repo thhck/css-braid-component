@@ -97,7 +97,7 @@ export class GetOperationHandler extends OperationHandler {
 
 }
 /** Helper to collect stream data into a Buffer */
-async function readableToBuffer(stream: Guarded<Readable>): Promise<Buffer> {
+export async function readableToBuffer(stream: Guarded<Readable>): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     stream.on('data', (chunk:any) => chunks.push(chunk));

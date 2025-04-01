@@ -11,6 +11,7 @@
       "@id": "urn:solid-server:default:Middleware",
       "@type": "SequenceHandler",
       "handlers": [
+
         {
           "comment": "These handlers can be executed in any order.",
           "@id": "urn:solid-server:default:ParallelMiddleware",
@@ -20,14 +21,12 @@
           ]
         },
         {
-          "comment": "CORS has to be last since it can close the connection.",
-          "@id": "urn:solid-server:default:Middleware_Cors"
+          "@id": "urn:solid-server:default:Middleware_Braid"
         },
         {
-          "@id": "urn:solid-server:default:Middleware_Braid"
+          "comment": "CORS has to be last since it can close the connection.",
+          "@id": "urn:solid-server:default:Middleware_Cors"
         }
-
-
       ]
     }
   ]

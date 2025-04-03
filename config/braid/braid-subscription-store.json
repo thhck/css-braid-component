@@ -1,0 +1,21 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    { 
+      "@id": "urn:solid-server:default:BraidSubscriptionStore",
+      "@type": "BaseBraidSubscriptionStore",
+      "storage": {
+        "@id": "urn:solid-server:default:BraidSubscriptionStorage",
+        "@type": "WrappedExpiringStorage",
+        "source": {
+          "@type": "ContainerPathStorage",
+          "relativePath": "/accounts/braid/subscriptions",
+          "source": { "@id": "urn:solid-server:default:KeyValueStorage" }
+        }
+      }
+    },
+  ]
+}
+

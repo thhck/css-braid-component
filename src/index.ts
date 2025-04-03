@@ -1,5 +1,7 @@
 // Braid endpoint
-export * from './braid/BraidHandler';
+//export * from './braid/asup/BraidHandler';
+export * from './braid/BaseBraidSubscriptionStore'
+export * from './braid/BraidSubscriptionStore'
 
 // Authentication
 export * from './authentication/BearerWebIdExtractor';

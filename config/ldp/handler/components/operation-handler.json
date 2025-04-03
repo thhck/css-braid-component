@@ -8,6 +8,7 @@
         {
           "@type": "GetOperationHandler",
           "store": { "@id": "urn:solid-server:default:ResourceStore" },
+          "braidStore": { "@id":"urn:solid-server:default:BraidSubscriptionStore" },
           "eTagHandler": { "@id": "urn:solid-server:default:ETagHandler" }
         },
         {
@@ -17,6 +18,7 @@
         {
           "@type": "PutOperationHandler",
           "store": { "@id": "urn:solid-server:default:ResourceStore" },
+          "braidStore": { "@id":"urn:solid-server:default:BraidSubscriptionStore" },
           "metadataStrategy": { "@id": "urn:solid-server:default:MetadataStrategy" }
         },
         {

@@ -1,8 +1,8 @@
 export interface BraidSubscriptionStore {
-  set: (cookie: string, key: string, value: string) => Promise<void>;
+  set: (key: string, value: any) => Promise<void>;
 
-  get: (cookie: string, key: string) => Promise<string | undefined>;
+  get: (key: string) => Promise<any>;
 
-  delete: (cookie: string, key: string) => Promise<boolean>;
+  delete: (key: string) => Promise<boolean>;
 }
 

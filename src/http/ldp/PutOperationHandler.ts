@@ -18,7 +18,8 @@ const subscriptions: { [key: string]: any } = {};
 
 // Generate a subscription key using the request's peer header and url
 const subscription_hash = (req: any): string =>
-  JSON.stringify([req.headers.peer, req.url]);
+  '123' // TODO
+  // JSON.stringify([req.headers.peer, req.url]);
 
 /**
  * Handles PUT {@link Operation}s.

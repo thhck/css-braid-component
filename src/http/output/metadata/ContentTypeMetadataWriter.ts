@@ -9,6 +9,8 @@ export class ContentTypeMetadataWriter extends MetadataWriter {
   public async handle(input: { response: HttpResponse; metadata: RepresentationMetadata }): Promise<void> {
     const { contentTypeObject } = input.metadata;
     if (contentTypeObject) {
+      // debug: this is raising an error two
+      if(!input.response.headersSent)
       input.response.setHeader('Content-Type', contentTypeObject.toHeaderValueString());
     }
   }

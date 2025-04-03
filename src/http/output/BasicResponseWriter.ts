@@ -28,10 +28,13 @@ export class BasicResponseWriter extends ResponseWriter {
 
   public async handle(input: { response: HttpResponse; result: ResponseDescription }): Promise<void> {
     if (input.result.metadata) {
-      await this.metadataWriter.handleSafe({ response: input.response, metadata: input.result.metadata });
-    }
+      // putting  a try catch here return an error
+        await this.metadataWriter.handleSafe({ response: input.response, metadata: input.result.metadata });      
 
-    input.response.writeHead(input.result.statusCode);
+    }
+    // debug: remove me
+    if (!input.response.headersSent)
+      input.response.writeHead(input.result.statusCode);
 
     if (input.result.data) {
       const pipe = pipeSafely(input.result.data, input.response);

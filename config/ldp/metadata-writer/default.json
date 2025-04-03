@@ -14,7 +14,10 @@
   ],
   "@graph": [
     {
-      "comment": "Adds metadata to the response based on the RDF metadata.",
+      "comment": 
+      ["Adds metadata to the response based on the RDF metadata.",
+        "debug: this is partialy where the ParallelHandler is created"
+      ],
       "@id": "urn:solid-server:default:MetadataWriter",
       "@type": "ParallelHandler",
       "handlers": [

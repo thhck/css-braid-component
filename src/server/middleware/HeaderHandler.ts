@@ -15,7 +15,7 @@ export class HeaderHandler extends HttpHandler {
   public async handle({ response }: { response: HttpResponse }): Promise<void> {
     for (const header of Object.keys(this.headers)) {
       // debug: remove me
-      if (!response.headersSent)
+      // if (!response.headersSent)
         response.setHeader(header, this.headers[header]);
     }
   }

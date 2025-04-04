@@ -10,7 +10,7 @@ export class ContentTypeMetadataWriter extends MetadataWriter {
     const { contentTypeObject } = input.metadata;
     if (contentTypeObject) {
       // debug: this is raising an error two
-      if(!input.response.headersSent)
+      // if(!input.response.headersSent)
       input.response.setHeader('Content-Type', contentTypeObject.toHeaderValueString());
     }
   }

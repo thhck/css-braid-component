@@ -109,33 +109,36 @@ export class PutOperationHandler extends OperationHandler {
     const body = await this.store.getRepresentation(operation.target, {}, operation.conditions);
 
     // Broadcast the update to all subscribers for this URL, excluding the sender
-    if (request.headers.peer) {
-      for (const key in subscriptions) { // TODO how to iterate over subscription ??
-        // request.body.data.resume();
-        // const content = (await readableToBuffer(body.data)).toString();
 
-        try {
-          const [peer, url] = JSON.parse(key);
-          let relativePath = operation.target.path.replace('http://localhost:3000', '') // TODO dynamically
-          // if (url === relativePath && peer !== request.headers.peer) {
-          if (url === relativePath ) {
-            // let sub = await this.braidStore.get(key)
-            let sub = subscriptions[key]
-            let updateVersion = Math.random().toString().slice(2,8)
-            sub.sendUpdate({
-              version: [updateVersion] ,
-              // let's just send the content we got from the patch form now
-              // later, we will need to apply the patches first and get the content. 
-              // and we should get the content from the representation ( freshly patched )
-              body: JSON.stringify([{ text: newContent }]) 
-            });
-            let breakpoint
-          }
-        } catch (err) {
-          this.logger.error('Error parsing subscription key:' + err);
-        }
-      }
-    }
+    //  Let's do that in the BasicResponseWriter now
+
+    // if (request.headers.peer) {
+    //   for (const key in subscriptions) { // TODO how to iterate over subscription ??
+    //     // request.body.data.resume();
+    //     // const content = (await readableToBuffer(body.data)).toString();
+
+    //     try {
+    //       const [peer, url] = JSON.parse(key);
+    //       let relativePath = operation.target.path.replace('http://localhost:3000', '') // TODO dynamically
+    //       // if (url === relativePath && peer !== request.headers.peer) {
+    //       if (url === relativePath ) {
+    //         // let sub = await this.braidStore.get(key)
+    //         let sub = subscriptions[key]
+    //         let updateVersion = Math.random().toString().slice(2,8)
+    //         sub.sendUpdate({
+    //           version: [updateVersion] ,
+    //           // let's just send the content we got from the patch form now
+    //           // later, we will need to apply the patches first and get the content. 
+    //           // and we should get the content from the representation ( freshly patched )
+    //           body: JSON.stringify([{ text: newContent }]) 
+    //         });
+    //         let breakpoint
+    //       }
+    //     } catch (err) {
+    //       this.logger.error('Error parsing subscription key:' + err);
+    //     }
+    //   }
+    // }
 
     if (exists) {
       return new ResetResponseDescription();

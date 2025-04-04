@@ -3,6 +3,10 @@ export interface BraidSubscriptionStore {
 
   get: (key: string) => Promise<any>;
 
+  entries: () => Promise<AsyncIterableIterator<[string, any]>>;
+
+  // entries: () => Promise<{ [key: string]: any}>;
+  
   delete: (key: string) => Promise<boolean>;
 }
 

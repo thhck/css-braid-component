@@ -62,7 +62,9 @@ export class ParsingHttpHandler extends HttpHandler {
     }
 
     if (result) {
-      await this.responseWriter.handleSafe({ response, result });
+      // we need to add the request so braid can determine
+      // if we in the PUT or GET case
+      await this.responseWriter.handleSafe({ response, request, result});
     }
   }
 

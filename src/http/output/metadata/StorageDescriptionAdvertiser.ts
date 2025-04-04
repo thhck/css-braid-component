@@ -43,7 +43,7 @@ export class StorageDescriptionAdvertiser extends MetadataWriter {
     const storageDescription = joinUrl(storageRoot.path, this.relativePath);
     // seems that the bug is triggered her
     // debug: remove me
-    if(!response.headersSent)
+    // if(!response.headersSent)
       addHeader(response, 'Link', `<${storageDescription}>; rel="${SOLID.storageDescription}"`);
     let breakpoint // just for the breakpoint
   }

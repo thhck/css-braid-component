@@ -18,6 +18,17 @@ export class BaseBraidSubscriptionStore implements BraidSubscriptionStore {
     return await this.storage.get(key);
   }
 
+  // public async entries(): Promise<{ [key: string]: any}> {
+  public async entries(): Promise<AsyncIterableIterator<[string, any]>> {
+    // const result:x { [key: string]: any} = {}
+    // const entries =  this.storage.entries()
+    // for await (const [key, value] of entries){
+    //   result[key] = value
+    // }
+    // return result
+    return this.storage.entries()
+  }
+
   public async delete(key: string): Promise<boolean> {
     return this.storage.delete(key);
   }

@@ -367,7 +367,7 @@ export function addHeader(response: HttpResponse, name: string, value: string | 
   }
   // debug: remove me
   try {
-    if(!response.headersSent)
+    // if(!response.headersSent)
     response.setHeader(name, allValues.length === 1 ? allValues[0] : allValues);
   }catch (error) {
     logger.error(`HERE YOU ARE ${error}`)

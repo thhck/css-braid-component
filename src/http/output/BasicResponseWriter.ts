@@ -11,6 +11,9 @@ import { BadRequestHttpError } from '../../util/errors/BadRequestHttpError';
 import { BasicRepresentation } from '../representation/BasicRepresentation';
 import { Guarded, guardStream } from '../../util/GuardedStream';
 import { PassThrough, Readable } from 'node:stream';
+import { OkResponseDescription } from './response/OkResponseDescription';
+import { RepresentationMetadata } from '../representation/RepresentationMetadata';
+import { addHeader } from '../../index';
 
 
 // TOOD: use local variable now.. use a store instead ?
@@ -56,7 +59,6 @@ export class BasicResponseWriter extends ResponseWriter {
   // TODO not use any but extends HTTPRequest with BraidHTTPRequest
   public async handle(input: { response: BraidHttpResponse; request?: BraidHttpRequest; result: ResponseDescription }): Promise<void> {
     if (input.result.metadata) {
-      // putting  a try catch here return an error
       await this.metadataWriter.handleSafe({ response: input.response, metadata: input.result.metadata });
 
     }
@@ -65,6 +67,15 @@ export class BasicResponseWriter extends ResponseWriter {
     // BRAID
     // If the request is a subscription, start it and store the response
     if (input.request && input.request.headers.peer && input.request.method == "GET") {
+
+      // weirdly I had to add that to make it work. It was included the response header
+      // in `braidjs` branch but not in that one. I don't what create them, but it seems 
+      // not to work without, so I'm adding them manually. 
+      // in braid-http-server there is comment l.531 stating that chunked enconding means
+      // the end of a response and we should not use them, so I'm puzzled
+       
+      addHeader(input.response, 'Transfer-Encoding', 'chunked')
+
       if (input.request.subscribe) {
         input.response.startSubscription({
           onClose: async () => {
@@ -88,13 +99,8 @@ export class BasicResponseWriter extends ResponseWriter {
         // const eTag = this.eTagHandler.getETag(body.metadata);
         // updateVersion = eTag
         let updateVersion = Math.random().toString().slice(2, 8)
-
-
-
         let content;
-
         // Clone the stream before reading
-
         // Ensure stream is in flowing mode and collect data
         if (!input.result.data) return
         content = await readableToBuffer(input.result.data);
@@ -126,8 +132,9 @@ export class BasicResponseWriter extends ResponseWriter {
         stream.on('close', () => {
           this.logger.warn(">>>>>>>>> STREAM CLOSED")
         });
-        input.result.data = stream
-        // return new OkResponseDescription(body.metadata, stream)
+        // input.result.data = stream
+        const metadata = input.result.metadata || new RepresentationMetadata()
+        input.result =  new OkResponseDescription(metadata , stream)
       }
 
     }
@@ -136,15 +143,21 @@ export class BasicResponseWriter extends ResponseWriter {
       // Broadcast the update to all subscribers for this URL, excluding the sender
       if (input.request.headers.peer) {
         for (const key in subscriptions) { // TODO how to iterate over subscription ??
-          // input.request.body.data.resume();
-          // const content = (await readableToBuffer(body.data)).toString();
+
+          
+          let content = ''
+          if (input.result.data){
+
+            input.result.data.resume();
+            content = (await readableToBuffer(input.result.data)).toString();
+          }
+          // else trigger error ?
 
           try {
             const [peer, url] = JSON.parse(key);
             // let relativePath = operation.target.path.replace('http://localhost:3000', '') // TODO dynamically
-            let relativePath = "/a/profile/card"
             // if (url === relativePath && peer !== input.request.headers.peer) {
-            if (url === relativePath) {
+            if (url === input.request.url) {
               // let sub = await this.braidStore.get(key)
               let sub = subscriptions[key]
               let updateVersion = Math.random().toString().slice(2, 8)
@@ -153,7 +166,7 @@ export class BasicResponseWriter extends ResponseWriter {
                 // let's just send the content we got from the patch form now
                 // later, we will need to apply the patches first and get the content. 
                 // and we should get the content from the representation ( freshly patched )
-                body: JSON.stringify([{ text: 'spoofed' }]) // TODO get content
+                body: JSON.stringify([{ text: content }]) // TODO get content
               });
 
               input.response.end()

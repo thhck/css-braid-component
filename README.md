@@ -19,14 +19,14 @@ Therefore braid workds despite solid spec.
 
 #### *braidjs-braid-response-writter*
 
-This branch try not to cheat, but is still buggy and doesn't work
+This branch try not to cheat, ~~but is still buggy and doesn't work~~ and is working now
 
 Forked from *braidjs* this branch try to solve the above by
 rewrite CSS BaseResponseWriter, and include braid stuff there.
 
 Since this the `ResponseWriter` the "last-stop" of the HTTP train,
 all CSS header should be set and braid can safely write response.
-wip...
+~~wip...~~
 
 [**related github issue**](https://github.com/braid-org/braid-http/issues/6)
 

@@ -73,7 +73,7 @@ export class BasicResponseWriter extends ResponseWriter {
       // not to work without, so I'm adding them manually. 
       // in braid-http-server there is comment l.531 stating that chunked enconding means
       // the end of a response and we should not use them, so I'm puzzled
-       
+
       addHeader(input.response, 'Transfer-Encoding', 'chunked')
 
       if (input.request.subscribe) {
@@ -120,7 +120,7 @@ export class BasicResponseWriter extends ResponseWriter {
       // if (!input.request.subscribe) {
       //   return new OkResponseDescription(body.metadata, dataStream2);
       // } else {
-      if ( input.request.subscribe){
+      if (input.request.subscribe) {
         // I need to keep the HTTP connection open
         // let's create a stream and not close it
         // idk if this the right way, but no other idea for now
@@ -134,33 +134,37 @@ export class BasicResponseWriter extends ResponseWriter {
         });
         // input.result.data = stream
         const metadata = input.result.metadata || new RepresentationMetadata()
-        input.result =  new OkResponseDescription(metadata , stream)
+        input.result = new OkResponseDescription(metadata, stream)
       }
 
     }
 
     if (input.request && input.request.headers.peer && input.request.method == "PUT") {
+      let content = ''
+      if (input.result.data) {
+
+        input.result.data.resume();
+        content = (await readableToBuffer(input.result.data)).toString();
+      }
+      // else trigger error ?
       // Broadcast the update to all subscribers for this URL, excluding the sender
       if (input.request.headers.peer) {
         for (const key in subscriptions) { // TODO how to iterate over subscription ??
 
-          
-          let content = ''
-          if (input.result.data){
 
-            input.result.data.resume();
-            content = (await readableToBuffer(input.result.data)).toString();
-          }
-          // else trigger error ?
+
 
           try {
             const [peer, url] = JSON.parse(key);
+            this.logger.info(`BRAID: preparing for peer ${peer}`)
+            this.logger.info(`BRAID: ${url} === ${input.request.url} ?`)
             // let relativePath = operation.target.path.replace('http://localhost:3000', '') // TODO dynamically
             // if (url === relativePath && peer !== input.request.headers.peer) {
             if (url === input.request.url) {
               // let sub = await this.braidStore.get(key)
               let sub = subscriptions[key]
               let updateVersion = Math.random().toString().slice(2, 8)
+              this.logger.info(`BRAID: sending update ${updateVersion} to ${sub}`)
               sub.sendUpdate({
                 version: [updateVersion],
                 // let's just send the content we got from the patch form now
@@ -169,14 +173,15 @@ export class BasicResponseWriter extends ResponseWriter {
                 body: JSON.stringify([{ text: content }]) // TODO get content
               });
 
-              input.response.end()
-              return 
+
             }
           } catch (err) {
             this.logger.error('Error parsing subscription key:' + err);
           }
         }
       }
+      input.response.end()
+      return
     }
 
 

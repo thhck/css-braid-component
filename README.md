@@ -34,7 +34,7 @@ all CSS header should be set and braid can safely write response.
 
 ```
 npm i
-npm build
+npm run build
 npm run start
 ```
 
@@ -49,19 +49,9 @@ after install
  1. on the account page click `create pod`
  1. create a pod ( `a` in this example )
 
-#### disable multiplexing
-
-edit `./node_modules/braid-http/braid-http-server.js`
-add a the top:
-```
-braidify.enable_multiplex = false
-```
-
-rebuild and restart the server
-
 #### let everyone write the pod's card
 
-edit `./data/a/profile/card` ( change `a` with you pod name )
+edit `./data/a/profile/card.acl` ( change `a` with you pod name )
 
 change
 
@@ -83,49 +73,11 @@ to
     acl:mode acl:Read, acl:Write, acl:Control.
 ```
 
-#### set up the client
+#### Open up the demo client!
 
-run the following client: [https://github.com/braid-org/braid-http/tree/58d28edf16db66e20624df3fd83f840a97f74ace/demos/chat](https://github.com/braid-org/braid-http/tree/58d28edf16db66e20624df3fd83f840a97f74ace/demos/chat)
+There's a `client.html` file in the repo. Open that up in your browser now via a `file:///` URL!
 
-edit `client.html` with the following diff:
-please apply this patch manually, basically it just disable multiplexing, change the target url, and add `text/turtle` content-type
-
-```
-6a9,13
-> 	braid_fetch.enable_multiplex = false
->   const target_endpoint = '/a/profile/card'
-17c24
-<         <input type=text id=new_stuff onkeydown=${hit_a_key}/>
----
->         <textarea id=new_stuff onkeydown=${hit_a_key}/>
-51c59
-<       curr_version['/chat'] = [(parseInt(curr_version['/chat'][0]) + 1) + '']
----
->       curr_version[target_endpoint] = [(parseInt(curr_version[target_endpoint][0]) + 1) + '']
-58,59c66,76
-<       var res = await braid_fetch(url, {method: 'put', patches, peer})
----
->       var res = await braid_fetch(url,
->       	{
->       		method: 'put',
->       		headers: {"content-type": "text/turtle"},
->       		patches,
->       		peer,
->       	})
-66,67c83,85
-<   var path = '/chat',
-<       url = new URL(path, window.location.href),
----
->   var path = target_endpoint,
->       url = new URL(path, 'http://localhost:3000'),
-68a87
-```
-
-
-
-
-
-
+---------------------
 
  CSS' original README
 

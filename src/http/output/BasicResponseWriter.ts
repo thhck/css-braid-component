@@ -220,7 +220,10 @@ export class BasicResponseWriter extends ResponseWriter {
 async function readableToBuffer(stream: Guarded<Readable>): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    stream.on('data', (chunk: any) => chunks.push(chunk));
+    stream.on('data', (chunk: any) => {
+      // Convert string chunks to Buffer if needed
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    });
     stream.on('end', () => resolve(Buffer.concat(chunks)));
     stream.on('error', reject);
   });

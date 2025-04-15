@@ -64,7 +64,10 @@ export class BasicResponseWriter extends ResponseWriter {
     }
 
 
-    // BRAID
+    // BRAID 
+
+    // BRAID GET 
+
     // If the request is a subscription, start it and store the response
     if (input.request && input.request.headers.peer && input.request.method == "GET") {
 
@@ -139,6 +142,8 @@ export class BasicResponseWriter extends ResponseWriter {
 
     }
 
+    // BRAID PUT
+
     if (input.request && input.request.headers.peer && input.request.method == "PUT") {
       let content = ''
       if (input.result.data) {
@@ -165,12 +170,19 @@ export class BasicResponseWriter extends ResponseWriter {
               let sub = subscriptions[key]
               let updateVersion = Math.random().toString().slice(2, 8)
               this.logger.info(`BRAID: sending update ${updateVersion} to ${sub}`)
+              
+              let body = JSON.stringify([{ text: content }])
+              // since we are wrapping the content into `[{ test: ...}]`
+              // we need to change the content type, which is only the size of the resource content
+              
+              input.response.setHeader('content-length', 0)
+
               sub.sendUpdate({
                 version: [updateVersion],
                 // let's just send the content we got from the patch form now
                 // later, we will need to apply the patches first and get the content. 
                 // and we should get the content from the representation ( freshly patched )
-                body: JSON.stringify([{ text: content }]) // TODO get content
+                body
               });
 
 
